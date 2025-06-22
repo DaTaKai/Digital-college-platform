@@ -109,7 +109,7 @@ const AttendanceManager = () => {
     if (!homeworkForm.title.trim() || !homeworkForm.deadline) return;
 
     // In a real app, this would save to backend
-    alert(`Домашнее з��дание "${homeworkForm.title}" назначено!`);
+    alert(`Домашнее задание "${homeworkForm.title}" назначено!`);
     setHomeworkForm({ title: "", description: "", deadline: "" });
     setHomeworkDialog(false);
   };
