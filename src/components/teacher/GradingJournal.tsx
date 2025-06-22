@@ -302,8 +302,8 @@ const GradingJournal = () => {
               </div>
               <div>• Нажмите на звёздочку для выставления оценки</div>
               <div>
-                • <FileText className="inline h-3 w-3" /> —
-                добавить/просмотре��ь материалы
+                • <FileText className="inline h-3 w-3" /> — добавить/просмотреть
+                материалы
               </div>
               <div>
                 • <BookOpen className="inline h-3 w-3" /> — добавить/просмотреть
@@ -412,7 +412,7 @@ const GradingJournal = () => {
                             title: e.target.value,
                           }))
                         }
-                        placeholder="Например: Решить зад��чи 1-10"
+                        placeholder="Например: Решить зада��и 1-10"
                       />
                     </div>
                     <div className="space-y-2">
