@@ -38,7 +38,7 @@ const TeacherDashboard = () => {
     0,
   );
 
-  const renderScheduleTab = () => <TeacherSchedule />;
+  const renderScheduleTab = () => <EnhancedTeacherSchedule />;
 
   const renderJournalTab = () => <GradingJournal />;
 
