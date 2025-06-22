@@ -702,7 +702,7 @@ const EnhancedTeacherSchedule = () => {
                           {Math.floor(group.students.length * 0.85)}
                         </div>
                         <div className="text-xs text-green-700">
-                          Пр��сутствуют
+                          Присутствуют
                         </div>
                       </div>
                       <div className="p-2 bg-yellow-50 rounded">
@@ -781,7 +781,7 @@ const EnhancedTeacherSchedule = () => {
                     ))}
                   </div>
                   <Button className="w-full mt-4">
-                    Массовое выставление о��енок
+                    Массовое выставление оценок
                   </Button>
                 </CardContent>
               </Card>
