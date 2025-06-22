@@ -20,6 +20,7 @@ import {
   LogOut,
   Menu,
   X,
+  ShoppingCart,
 } from "lucide-react";
 
 interface NavigationProps {
@@ -46,6 +47,7 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
           { id: "schedule", label: "Расписание", icon: Calendar },
           { id: "materials", label: "Материалы", icon: BookOpen },
           { id: "grades", label: "Оценки", icon: BarChart3 },
+          { id: "shop", label: "Магазин", icon: ShoppingCart },
           { id: "group", label: "Группа", icon: Users },
         ];
       case "teacher":

@@ -20,9 +20,11 @@ import {
   getGroupById,
   getGradesForStudent,
   getSubjectById,
+  getStudentPoints,
   SUBJECTS,
   getLessonsForGroup,
 } from "@/lib/data";
+import PointsShop from "@/components/student/PointsShop";
 import { authService } from "@/lib/auth";
 
 const StudentDashboard = () => {
@@ -36,11 +38,20 @@ const StudentDashboard = () => {
 
   const group = getGroupById(user.groupId || "");
   const grades = getGradesForStudent(user.id);
+  const studentPoints = getStudentPoints(user.id);
 
   const renderScheduleTab = () => (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Расписание</h2>
+        <div className="flex items-center gap-4">
+          <h2 className="text-2xl font-bold text-gray-900">Расписание</h2>
+          {studentPoints && studentPoints.earnedToday > 0 && (
+            <Badge className="gap-1">
+              <TrendingUp className="h-3 w-3" />+{studentPoints.earnedToday}{" "}
+              баллов сегодня
+            </Badge>
+          )}
+        </div>
         <div className="flex items-center gap-2">
           <Button
             variant={scheduleView === "day" ? "default" : "outline"}
@@ -364,6 +375,8 @@ const StudentDashboard = () => {
     );
   };
 
+  const renderShopTab = () => <PointsShop />;
+
   const renderContent = () => {
     switch (activeTab) {
       case "schedule":
@@ -372,6 +385,8 @@ const StudentDashboard = () => {
         return renderMaterialsTab();
       case "grades":
         return renderGradesTab();
+      case "shop":
+        return renderShopTab();
       case "group":
         return renderGroupTab();
       default:

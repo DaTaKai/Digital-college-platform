@@ -1,5 +1,8 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
+import Schedule from "@/components/Schedule";
+import AttendanceManager from "@/components/teacher/AttendanceManager";
+import GradingJournal from "@/components/teacher/GradingJournal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,8 +14,12 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
+  TrendingUp,
+  FileText,
+  Award,
 } from "lucide-react";
 import { authService } from "@/lib/auth";
+import { LESSONS, GROUPS, STUDENT_POINTS } from "@/lib/data";
 
 const TeacherDashboard = () => {
   const [activeTab, setActiveTab] = useState("schedule");
@@ -22,84 +29,157 @@ const TeacherDashboard = () => {
     return <div>Доступ запрещен</div>;
   }
 
+  // Calculate stats
+  const todayLessons = LESSONS.filter(
+    (l) => l.date === new Date().toISOString().split("T")[0],
+  ).length;
+  const totalStudents = GROUPS.reduce((sum, g) => sum + g.students.length, 0);
+  const totalEarnedToday = STUDENT_POINTS.reduce(
+    (sum, sp) => sum + sp.earnedToday,
+    0,
+  );
+
+  const renderScheduleTab = () => (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-900">
+        Интерактивное расписание
+      </h2>
+      <Schedule view="day" />
+    </div>
+  );
+
+  const renderAttendanceTab = () => <AttendanceManager />;
+
+  const renderJournalTab = () => <GradingJournal />;
+
+  const renderAnalyticsTab = () => (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-gray-900">Активность студентов</h2>
+
+      {/* Student Points Analytics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <Award className="h-5 w-5 text-yellow-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">
+                  Баллов заработано сегодня
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {totalEarnedToday}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <TrendingUp className="h-5 w-5 text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Активных студентов</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {STUDENT_POINTS.filter((sp) => sp.earnedToday > 0).length}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <FileText className="h-5 w-5 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Материалов загружено</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {LESSONS.reduce(
+                    (sum, l) => sum + (l.materials?.length || 0),
+                    0,
+                  )}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Student Activity Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Активность студентов по баллам</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {STUDENT_POINTS.map((studentPoints) => {
+              const group = GROUPS.find((g) =>
+                g.students.some((s) => s.id === studentPoints.studentId),
+              );
+              const student = group?.students.find(
+                (s) => s.id === studentPoints.studentId,
+              );
+
+              return (
+                <div
+                  key={studentPoints.studentId}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-sm font-medium">
+                        {student?.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="font-medium">{student?.name}</p>
+                      <p className="text-sm text-gray-500">
+                        Группа: {group?.name}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center gap-1 text-yellow-600">
+                      <Award className="h-4 w-4" />
+                      <span className="font-semibold">
+                        {studentPoints.totalPoints}
+                      </span>
+                    </div>
+                    {studentPoints.earnedToday > 0 && (
+                      <div className="text-xs text-green-600">
+                        +{studentPoints.earnedToday} сегодня
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   const renderContent = () => {
     switch (activeTab) {
       case "schedule":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Интерактивное расписание
-            </h2>
-            <div className="text-center py-12">
-              <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Расписание преподавателя
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Здесь будет интерактивное расписание с возможностью отметки
-                посещаемости и загрузки материалов
-              </p>
-              <Badge variant="secondary">В разработке</Badge>
-            </div>
-          </div>
-        );
-
+        return renderScheduleTab();
       case "attendance":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">Посещаемость</h2>
-            <div className="text-center py-12">
-              <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Отметка посещаемости
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Таблица с именами студентов и чекбоксами для отметки
-                посещаемости
-              </p>
-              <Badge variant="secondary">В разработке</Badge>
-            </div>
-          </div>
-        );
-
+        return renderAttendanceTab();
       case "journal":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Журнал оценок и материалов
-            </h2>
-            <div className="text-center py-12">
-              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Массовое выставление оценок
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Таблица для массового выставления оценок и загрузки материалов
-              </p>
-              <Badge variant="secondary">В разработке</Badge>
-            </div>
-          </div>
-        );
-
+        return renderJournalTab();
       case "analytics":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Активность студентов
-            </h2>
-            <div className="text-center py-12">
-              <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Аналитика активности
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Кто просмотрел материал, кто сдал работы вовремя
-              </p>
-              <Badge variant="secondary">В разработке</Badge>
-            </div>
-          </div>
-        );
-
+        return renderAnalyticsTab();
       default:
         return (
           <div className="space-y-6">
@@ -117,7 +197,9 @@ const TeacherDashboard = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Сегодня занятий</p>
-                      <p className="text-2xl font-bold text-gray-900">3</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {todayLessons}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -131,7 +213,9 @@ const TeacherDashboard = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-600">Студентов</p>
-                      <p className="text-2xl font-bold text-gray-900">24</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {totalStudents}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -141,11 +225,13 @@ const TeacherDashboard = () => {
                 <CardContent className="p-6">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-yellow-100 rounded-lg">
-                      <AlertCircle className="h-5 w-5 text-yellow-600" />
+                      <Award className="h-5 w-5 text-yellow-600" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Непроверенных</p>
-                      <p className="text-2xl font-bold text-gray-900">7</p>
+                      <p className="text-sm text-gray-600">Баллов сегодня</p>
+                      <p className="text-2xl font-bold text-gray-900">
+                        {totalEarnedToday}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -166,13 +252,34 @@ const TeacherDashboard = () => {
               </Card>
             </div>
 
-            <div className="text-center py-12">
+            <div className="text-center py-8">
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Полный функционал в разработке
+                Все функции доступны!
               </h3>
               <p className="text-gray-500 mb-4">
                 Используйте навигацию выше для доступа к различным функциям
               </p>
+              <div className="flex flex-wrap gap-2 justify-center">
+                {[
+                  { id: "schedule", label: "Расписание", icon: Calendar },
+                  { id: "attendance", label: "Посещаемость", icon: Users },
+                  { id: "journal", label: "Журнал", icon: BookOpen },
+                  { id: "analytics", label: "Аналитика", icon: BarChart3 },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <Button
+                      key={item.id}
+                      variant="outline"
+                      onClick={() => setActiveTab(item.id)}
+                      className="gap-2"
+                    >
+                      <Icon className="h-4 w-4" />
+                      {item.label}
+                    </Button>
+                  );
+                })}
+              </div>
             </div>
           </div>
         );
