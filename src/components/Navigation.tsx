@@ -113,7 +113,7 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-gray-900">
-                  Платформа Колледжа
+                  Digital College
                 </h1>
                 <p className="text-xs text-gray-500">
                   {getRoleDisplayName(user.role)}
