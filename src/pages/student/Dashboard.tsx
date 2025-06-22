@@ -25,11 +25,16 @@ import {
   getLessonsForGroup,
 } from "@/lib/data";
 import PointsShop from "@/components/student/PointsShop";
+import HomeworkAssignments from "@/components/student/HomeworkAssignments";
+import SubjectGrades from "@/components/student/SubjectGrades";
 import { authService } from "@/lib/auth";
 
 const StudentDashboard = () => {
   const [activeTab, setActiveTab] = useState("schedule");
   const [scheduleView, setScheduleView] = useState<"day" | "week">("day");
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(
+    null,
+  );
   const user = authService.getCurrentUser();
 
   if (!user || user.role !== "student") {
@@ -73,94 +78,7 @@ const StudentDashboard = () => {
     </div>
   );
 
-  const renderMaterialsTab = () => {
-    const lessons = getLessonsForGroup(user.groupId || "");
-    const materialsLessons = lessons.filter(
-      (lesson) => lesson.materials && lesson.materials.length > 0,
-    );
-
-    return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-gray-900">
-          Материалы и задания
-        </h2>
-
-        {materialsLessons.length === 0 ? (
-          <div className="text-center py-12">
-            <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              Нет материалов
-            </h3>
-            <p className="text-gray-500">
-              Материалы к занятиям будут появляться здесь
-            </p>
-          </div>
-        ) : (
-          <div className="grid gap-4">
-            {materialsLessons.map((lesson) => {
-              const subject = getSubjectById(lesson.subjectId);
-              return (
-                <Card key={lesson.id}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2">
-                        <div
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: subject?.color }}
-                        />
-                        {subject?.name}
-                      </CardTitle>
-                      <Badge variant="outline">
-                        {new Date(lesson.date).toLocaleDateString("ru-RU")}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {lesson.materials?.map((material) => (
-                      <div
-                        key={material.id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-md"
-                      >
-                        <div>
-                          <p className="font-medium">{material.title}</p>
-                          <p className="text-sm text-gray-600">
-                            {material.description}
-                          </p>
-                        </div>
-                        <Button variant="outline" size="sm">
-                          Скачать
-                        </Button>
-                      </div>
-                    ))}
-
-                    {lesson.homework && (
-                      <div className="p-3 bg-orange-50 rounded-md border border-orange-200">
-                        <div className="flex items-center justify-between mb-2">
-                          <h4 className="font-medium text-orange-900">
-                            {lesson.homework.title}
-                          </h4>
-                          <Badge variant="outline" className="text-orange-700">
-                            До{" "}
-                            {new Date(
-                              lesson.homework.deadline,
-                            ).toLocaleDateString("ru-RU")}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-orange-800 mb-3">
-                          {lesson.homework.description}
-                        </p>
-                        <Button size="sm">Сдать работу</Button>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    );
-  };
+  const renderHomeworkTab = () => <HomeworkAssignments />;
 
   const renderGradesTab = () => {
     const subjectGrades = SUBJECTS.map((subject) => {
@@ -197,7 +115,7 @@ const StudentDashboard = () => {
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Средний балл</p>
+                  <p className="text-sm text-gray-600">Сре��ний балл</p>
                   <p className="text-2xl font-bold text-gray-900">4.2</p>
                 </div>
               </div>
@@ -237,7 +155,11 @@ const StudentDashboard = () => {
         <div className="space-y-4">
           {subjectGrades.map(
             ({ subject, grades: subjectGrades, average, trend }) => (
-              <Card key={subject.id}>
+              <Card
+                key={subject.id}
+                className="cursor-pointer hover:shadow-md transition-shadow"
+                onClick={() => setSelectedSubjectId(subject.id)}
+              >
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
@@ -261,6 +183,9 @@ const StudentDashboard = () => {
                           />
                         </div>
                       </div>
+                      <Button variant="outline" size="sm">
+                        Подробнее
+                      </Button>
                     </div>
                   </div>
                 </CardHeader>
@@ -378,11 +303,21 @@ const StudentDashboard = () => {
   const renderShopTab = () => <PointsShop />;
 
   const renderContent = () => {
+    // Handle subject grades navigation
+    if (selectedSubjectId) {
+      return (
+        <SubjectGrades
+          subjectId={selectedSubjectId}
+          onBack={() => setSelectedSubjectId(null)}
+        />
+      );
+    }
+
     switch (activeTab) {
       case "schedule":
         return renderScheduleTab();
-      case "materials":
-        return renderMaterialsTab();
+      case "homework":
+        return renderHomeworkTab();
       case "grades":
         return renderGradesTab();
       case "shop":
