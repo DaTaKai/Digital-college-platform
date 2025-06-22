@@ -1,7 +1,6 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
-import Schedule from "@/components/Schedule";
-import AttendanceManager from "@/components/teacher/AttendanceManager";
+import TeacherSchedule from "@/components/teacher/TeacherSchedule";
 import GradingJournal from "@/components/teacher/GradingJournal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -39,16 +38,7 @@ const TeacherDashboard = () => {
     0,
   );
 
-  const renderScheduleTab = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">
-        Интерактивное расписание
-      </h2>
-      <Schedule view="day" />
-    </div>
-  );
-
-  const renderAttendanceTab = () => <AttendanceManager />;
+  const renderScheduleTab = () => <TeacherSchedule />;
 
   const renderJournalTab = () => <GradingJournal />;
 
@@ -174,8 +164,6 @@ const TeacherDashboard = () => {
     switch (activeTab) {
       case "schedule":
         return renderScheduleTab();
-      case "attendance":
-        return renderAttendanceTab();
       case "journal":
         return renderJournalTab();
       case "analytics":
@@ -262,7 +250,6 @@ const TeacherDashboard = () => {
               <div className="flex flex-wrap gap-2 justify-center">
                 {[
                   { id: "schedule", label: "Расписание", icon: Calendar },
-                  { id: "attendance", label: "Посещаемость", icon: Users },
                   { id: "journal", label: "Журнал", icon: BookOpen },
                   { id: "analytics", label: "Аналитика", icon: BarChart3 },
                 ].map((item) => {

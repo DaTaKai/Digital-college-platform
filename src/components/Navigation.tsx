@@ -55,7 +55,6 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
       case "teacher":
         return [
           { id: "schedule", label: "Расписание", icon: Calendar },
-          { id: "attendance", label: "Посещаемость", icon: Users },
           { id: "journal", label: "Журнал", icon: BookOpen },
           { id: "analytics", label: "Аналитика", icon: BarChart3 },
         ];
