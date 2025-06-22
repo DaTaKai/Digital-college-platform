@@ -384,7 +384,7 @@ const QualityControl = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant={getStatusColor(feedback.status) as any}>
-                      {feedback.status === "public" ? "Пуб��ичный" : "Помечен"}
+                      {feedback.status === "public" ? "Публичный" : "Помечен"}
                     </Badge>
                     {feedback.status === "flagged" && (
                       <Button variant="ghost" size="sm">
@@ -582,7 +582,7 @@ const QualityControl = () => {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Название опроса</Label>
-              <Input placeholder="��апример: Оценка качества преподавания" />
+              <Input placeholder="Нап��имер: Оценка качества преподавания" />
             </div>
 
             <div className="space-y-2">
