@@ -438,7 +438,7 @@ const EnhancedTeacherSchedule = () => {
 
         {/* Lessons Display */}
         {lessons.length > 0 ? (
-          <div className={`grid ${getCardCols()} gap-4`}>
+        <div className={`grid ${getCardCols()} gap-4`}>
             {lessons.map((lesson) => (
               <LessonCard key={lesson.id} lesson={lesson} />
             ))}
@@ -893,27 +893,31 @@ const EnhancedTeacherSchedule = () => {
       {renderContent()}
 
       {/* Enhanced Lesson Management Dialog */}
-      <Dialog open={lessonDialog} onOpenChange={setLessonDialog}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-          {selectedLesson && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  <div
-                    className="w-4 h-4 rounded-full"
-                    style={{
-                      backgroundColor: getSubjectById(selectedLesson.subjectId)
-                        ?.color,
-                    }}
-                  />
-                  {getSubjectById(selectedLesson.subjectId)?.name}
-                </DialogTitle>
-                <DialogDescription>
-                  {new Date(selectedLesson.date).toLocaleDateString("ru-RU")} •{" "}
-                  {selectedLesson.startTime} - {selectedLesson.endTime} • Каб.{" "}
-                  {selectedLesson.room}
-                </DialogDescription>
-              </DialogHeader>
+      {selectedLesson && (
+        <MobileDialog
+          open={lessonDialog}
+          onOpenChange={setLessonDialog}
+          title={
+            <div className="flex items-center gap-2">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{
+                  backgroundColor: getSubjectById(selectedLesson.subjectId)
+                    ?.color,
+                }}
+              />
+              {getSubjectById(selectedLesson.subjectId)?.name}
+            </div>
+          }
+          description={`${new Date(selectedLesson.date).toLocaleDateString("ru-RU")} • ${selectedLesson.startTime} - ${selectedLesson.endTime} • Каб. ${selectedLesson.room}`}
+          footer={
+            <div className="flex justify-between w-full">
+              <Button variant="outline" onClick={() => setLessonDialog(false)}>
+                Закрыть
+              </Button>
+            </div>
+          }
+        >
 
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-5">
