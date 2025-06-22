@@ -257,7 +257,7 @@ const AdminDashboard = () => {
         {/* Grade Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle>Распр��деление оценок</CardTitle>
+            <CardTitle>Распределение оценок</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
