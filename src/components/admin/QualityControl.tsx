@@ -582,7 +582,7 @@ const QualityControl = () => {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Название опроса</Label>
-              <Input placeholder="Нап��имер: Оценка качества преподавания" />
+              <Input placeholder="Например: Оценка качества преподавания" />
             </div>
 
             <div className="space-y-2">
