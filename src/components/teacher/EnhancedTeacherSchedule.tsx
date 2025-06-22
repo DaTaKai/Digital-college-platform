@@ -714,7 +714,7 @@ const EnhancedTeacherSchedule = () => {
                       </div>
                     </div>
                     <Button size="sm" className="w-full">
-                      Отметить посещаемость
+                      Отме��ить посещаемость
                     </Button>
                   </div>
                 </CardContent>
@@ -909,6 +909,25 @@ const EnhancedTeacherSchedule = () => {
               {getSubjectById(selectedLesson.subjectId)?.name}
             </div>
           }
+        >
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1">
+              <TabsTrigger value="info" className="text-xs sm:text-sm">
+                Инфо
+              </TabsTrigger>
+              <TabsTrigger value="attendance" className="text-xs sm:text-sm">
+                Посещение
+              </TabsTrigger>
+              <TabsTrigger value="materials" className="text-xs sm:text-sm">
+                Материалы
+              </TabsTrigger>
+              <TabsTrigger value="homework" className="text-xs sm:text-sm">
+                ДЗ
+              </TabsTrigger>
+              <TabsTrigger value="notes" className="text-xs sm:text-sm">
+                Заметки
+              </TabsTrigger>
+            </TabsList>
           description={`${new Date(selectedLesson.date).toLocaleDateString("ru-RU")} • ${selectedLesson.startTime} - ${selectedLesson.endTime} • Каб. ${selectedLesson.room}`}
           footer={
             <div className="flex justify-between w-full">
