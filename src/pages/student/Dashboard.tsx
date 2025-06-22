@@ -115,7 +115,7 @@ const StudentDashboard = () => {
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Сре��ний балл</p>
+                  <p className="text-sm text-gray-600">Средний балл</p>
                   <p className="text-2xl font-bold text-gray-900">4.2</p>
                 </div>
               </div>
