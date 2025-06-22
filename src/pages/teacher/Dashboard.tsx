@@ -171,6 +171,8 @@ const TeacherDashboard = () => {
         return renderJournalTab();
       case "analytics":
         return renderAnalyticsTab();
+      case "curator":
+        return renderCuratorTab();
       default:
         return (
           <div className="space-y-6">
