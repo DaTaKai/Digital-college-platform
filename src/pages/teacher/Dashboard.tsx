@@ -19,7 +19,7 @@ import {
   Award,
 } from "lucide-react";
 import { authService } from "@/lib/auth";
-import { LESSONS, GROUPS, STUDENT_POINTS } from "@/lib/data";
+import { LESSONS, GROUPS, STUDENT_POINTS, isCurator } from "@/lib/data";
 
 const TeacherDashboard = () => {
   const [activeTab, setActiveTab] = useState("schedule");
