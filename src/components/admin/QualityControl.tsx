@@ -46,6 +46,7 @@ import {
   Users,
   ThumbsUp,
   ThumbsDown,
+  Plus,
 } from "lucide-react";
 import { TEACHERS, GROUPS, SUBJECTS, LESSONS } from "@/lib/data";
 
@@ -383,7 +384,7 @@ const QualityControl = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant={getStatusColor(feedback.status) as any}>
-                      {feedback.status === "public" ? "Публичный" : "Помечен"}
+                      {feedback.status === "public" ? "Пуб��ичный" : "Помечен"}
                     </Badge>
                     {feedback.status === "flagged" && (
                       <Button variant="ghost" size="sm">
@@ -517,7 +518,7 @@ const QualityControl = () => {
       <Dialog open={feedbackDialog} onOpenChange={setFeedbackDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Отклонить матери��л</DialogTitle>
+            <DialogTitle>Отклонить материал</DialogTitle>
             <DialogDescription>
               Укажите причину отклонения материала
             </DialogDescription>
@@ -581,7 +582,7 @@ const QualityControl = () => {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label>Название опроса</Label>
-              <Input placeholder="Например: Оценка качества преподавания" />
+              <Input placeholder="��апример: Оценка качества преподавания" />
             </div>
 
             <div className="space-y-2">
