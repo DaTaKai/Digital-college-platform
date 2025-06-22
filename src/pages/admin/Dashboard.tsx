@@ -5,6 +5,7 @@ import UserManagement from "@/components/admin/UserManagement";
 import AcademicStructure from "@/components/admin/AcademicStructure";
 import ScheduleManagement from "@/components/admin/ScheduleManagement";
 import AnalyticsReports from "@/components/admin/AnalyticsReports";
+import QualityControl from "@/components/admin/QualityControl";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -39,23 +40,7 @@ const AdminDashboardPage = () => {
       case "analytics":
         return <AnalyticsReports />;
       case "quality":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Контроль качества
-            </h2>
-            <div className="text-center py-12">
-              <Shield className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Система контроля качества
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Рейтинги, опросы, обратная связь и модерация контента
-              </p>
-              <Badge variant="secondary">В разработке</Badge>
-            </div>
-          </div>
-        );
+        return <QualityControl />;
       default:
         return <AdminDashboard />;
     }
