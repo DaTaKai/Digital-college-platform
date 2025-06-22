@@ -200,11 +200,13 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
           <div className="flex justify-between items-center h-16">
             {/* Logo */}
             <div className="flex items-center gap-2">
-              <div className="p-2 bg-primary rounded-lg">
+              <div className="p-2 bg-blue-600 rounded-lg">
                 <GraduationCap className="h-4 w-4 text-white" />
               </div>
               <div>
-                <h1 className="text-sm font-semibold text-gray-900">Колледж</h1>
+                <h1 className="text-sm font-semibold text-gray-900">
+                  Digital College
+                </h1>
                 <p className="text-xs text-gray-500">
                   {getRoleDisplayName(user.role)}
                 </p>
