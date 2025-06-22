@@ -61,6 +61,7 @@ import {
   STUDENT_POINTS,
 } from "@/lib/data";
 import { authService } from "@/lib/auth";
+import { useMobileOptimized } from "@/hooks/use-mobile-optimized";
 
 interface StudentStats {
   attendanceRate: number;
@@ -576,7 +577,7 @@ const CuratorGroup = () => {
         <h3 className="text-lg font-semibold">Документы и отчёты</h3>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Соз��ать отчёт
+          Создать отчёт
         </Button>
       </div>
 
