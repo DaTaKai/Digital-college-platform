@@ -55,11 +55,22 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
           { id: "group", label: "Группа", icon: Users },
         ];
       case "teacher":
-        return [
+        const teacherItems = [
           { id: "schedule", label: "Расписание", icon: Calendar },
           { id: "journal", label: "Журнал", icon: BookOpen },
           { id: "analytics", label: "Аналитика", icon: BarChart3 },
         ];
+
+        // Add curator tab if teacher is a curator
+        if (isCurator(user.id)) {
+          teacherItems.push({
+            id: "curator",
+            label: "Моя группа",
+            icon: GraduationCap,
+          });
+        }
+
+        return teacherItems;
       case "admin":
         return [
           { id: "dashboard", label: "Панель", icon: BarChart3 },
