@@ -60,10 +60,12 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
         ];
       case "admin":
         return [
-          { id: "overview", label: "Обзор", icon: BarChart3 },
+          { id: "dashboard", label: "Панель", icon: BarChart3 },
           { id: "users", label: "Пользователи", icon: Users },
-          { id: "groups", label: "Группы", icon: BookOpen },
-          { id: "settings", label: "Настройки", icon: Settings },
+          { id: "structure", label: "Структура", icon: BookOpen },
+          { id: "schedule", label: "Расписание", icon: Calendar },
+          { id: "analytics", label: "Аналитика", icon: TrendingUp },
+          { id: "quality", label: "Контроль", icon: Shield },
         ];
       default:
         return [];
