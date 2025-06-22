@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Navigation from "@/components/Navigation";
-import TeacherSchedule from "@/components/teacher/TeacherSchedule";
+import EnhancedTeacherSchedule from "@/components/teacher/EnhancedTeacherSchedule";
 import GradingJournal from "@/components/teacher/GradingJournal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
