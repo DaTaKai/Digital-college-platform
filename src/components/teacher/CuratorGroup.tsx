@@ -52,6 +52,8 @@ import {
   Eye,
   Edit,
   Plus,
+  CheckCircle,
+  X,
 } from "lucide-react";
 import {
   getGroupsByCurator,
@@ -482,7 +484,7 @@ const CuratorGroup = () => {
                           <p className="font-medium text-sm">{student.name}</p>
                           <p className="text-xs text-gray-500">
                             Посещаемость: {stats.attendanceRate}% • Средний
-                            ба��л: {stats.averageGrade}
+                            балл: {stats.averageGrade}
                           </p>
                         </div>
                       </div>
@@ -1357,7 +1359,7 @@ const CuratorGroup = () => {
                     variant="outline"
                     onClick={() => setStudentDialog(false)}
                   >
-                    З��крыть
+                    Закрыть
                   </Button>
                   <Button
                     onClick={() => {
