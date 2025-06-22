@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navigation from "@/components/Navigation";
 import EnhancedTeacherSchedule from "@/components/teacher/EnhancedTeacherSchedule";
 import GradingJournal from "@/components/teacher/GradingJournal";
+import CuratorGroup from "@/components/teacher/CuratorGroup";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
