@@ -1,0 +1,145 @@
+/* Mobile-specific optimizations for Digital College platform */
+
+/* Touch-friendly interactions */
+@media (max-width: 768px) {
+  /* Larger touch targets */
+  .btn-mobile {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better spacing for mobile */
+  .card-mobile {
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  /* Improved typography for mobile */
+  .text-mobile-lg {
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .text-mobile-sm {
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* Modal and dialog optimizations */
+  .dialog-mobile {
+    margin: 8px;
+    max-height: calc(100vh - 16px);
+    border-radius: 12px;
+  }
+
+  /* Navigation improvements */
+  .nav-mobile {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  /* Form optimizations */
+  .form-mobile input,
+  .form-mobile textarea,
+  .form-mobile select {
+    font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 44px;
+  }
+
+  /* Grid optimizations */
+  .grid-mobile-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .grid-mobile-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  /* Table improvements */
+  .table-mobile {
+    font-size: 0.875rem;
+  }
+
+  .table-mobile th,
+  .table-mobile td {
+    padding: 8px 12px;
+  }
+
+  /* Scroll improvements */
+  .scroll-mobile {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .scroll-mobile::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Floating action button */
+  .fab-mobile {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 40;
+  }
+
+  /* Safe area handling for iOS */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .grid-tablet-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .grid-tablet-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .nav-mobile {
+    background: #1f2937;
+    border-bottom-color: #374151;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .btn-mobile {
+    border: 2px solid currentColor;
+  }
+}
