@@ -438,7 +438,7 @@ const EnhancedTeacherSchedule = () => {
 
         {/* Lessons Display */}
         {lessons.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className={`grid ${getCardCols()} gap-4`}>
             {lessons.map((lesson) => (
               <LessonCard key={lesson.id} lesson={lesson} />
             ))}
@@ -732,7 +732,7 @@ const EnhancedTeacherSchedule = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Журнал ��ценок</CardTitle>
+          <CardTitle>Журнал оценок</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
