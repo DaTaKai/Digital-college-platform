@@ -386,7 +386,7 @@ const EnhancedTeacherSchedule = () => {
                   <SelectValue placeholder="Группа" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">Все гр��ппы</SelectItem>
+                  <SelectItem value="all">Все группы</SelectItem>
                   {GROUPS.map((group) => (
                     <SelectItem key={group.id} value={group.id}>
                       {group.name}
@@ -702,7 +702,7 @@ const EnhancedTeacherSchedule = () => {
                           {Math.floor(group.students.length * 0.85)}
                         </div>
                         <div className="text-xs text-green-700">
-                          Присутствуют
+                          Пр��сутствуют
                         </div>
                       </div>
                       <div className="p-2 bg-yellow-50 rounded">
@@ -781,7 +781,7 @@ const EnhancedTeacherSchedule = () => {
                     ))}
                   </div>
                   <Button className="w-full mt-4">
-                    Массовое выставление оценок
+                    Массовое выставление о��енок
                   </Button>
                 </CardContent>
               </Card>
