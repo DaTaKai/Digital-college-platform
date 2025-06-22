@@ -206,7 +206,7 @@ const ScheduleManagement = () => {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Занятия на {selectedDate}</CardTitle>
+          <CardTitle>Занят��я на {selectedDate}</CardTitle>
           <Button onClick={handleCreateLesson}>
             <Plus className="h-4 w-4 mr-2" />
             Добавить занятие
@@ -430,7 +430,7 @@ const ScheduleManagement = () => {
 
               <div className="space-y-2">
                 <Label>Кабинет</Label>
-                <Input placeholder="��омер кабинета" />
+                <Input placeholder="Номер кабинета" />
               </div>
 
               <div className="space-y-2">
