@@ -28,8 +28,10 @@ import PointsShop from "@/components/student/PointsShop";
 import HomeworkAssignments from "@/components/student/HomeworkAssignments";
 import SubjectGrades from "@/components/student/SubjectGrades";
 import { authService } from "@/lib/auth";
+import { useMobileOptimized } from "@/hooks/use-mobile-optimized";
 
 const StudentDashboard = () => {
+  const { isMobile, getCardCols } = useMobileOptimized();
   const [activeTab, setActiveTab] = useState("schedule");
   const [scheduleView, setScheduleView] = useState<"day" | "week">("day");
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(
@@ -70,7 +72,7 @@ const StudentDashboard = () => {
             size="sm"
             onClick={() => setScheduleView("week")}
           >
-            Неделя
+            Неде��я
           </Button>
         </div>
       </div>
