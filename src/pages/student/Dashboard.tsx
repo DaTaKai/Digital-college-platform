@@ -72,7 +72,7 @@ const StudentDashboard = () => {
             size="sm"
             onClick={() => setScheduleView("week")}
           >
-            Неде��я
+            Неделя
           </Button>
         </div>
       </div>
@@ -109,7 +109,7 @@ const StudentDashboard = () => {
         <h2 className="text-2xl font-bold text-gray-900">Оценки и прогресс</h2>
 
         {/* Progress Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className={`grid ${getCardCols()} gap-4`}>
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center gap-3">
