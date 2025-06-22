@@ -130,7 +130,7 @@ const HomeworkAssignments = () => {
         return (
           <Badge variant="outline" className="gap-1">
             <CheckCircle className="h-3 w-3" />
-            {days} дне��
+            {days} дней
           </Badge>
         );
     }
