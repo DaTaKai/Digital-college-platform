@@ -52,6 +52,7 @@ import {
   STUDENT_POINTS,
   SUBJECTS,
 } from "@/lib/data";
+import { useMobileOptimized } from "@/hooks/use-mobile-optimized";
 
 type ViewMode = "today" | "week" | "month";
 type ScheduleModule =
@@ -508,7 +509,7 @@ const EnhancedTeacherSchedule = () => {
                 <Award className="h-5 w-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Ср. посещаемость</p>
+                <p className="text-sm text-gray-600">Ср. посещаемост��</p>
                 <p className="text-2xl font-bold text-gray-900">89%</p>
               </div>
             </div>
