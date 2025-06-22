@@ -72,6 +72,7 @@ interface StudentStats {
 }
 
 const CuratorGroup = () => {
+  const { isMobile, getCardCols, getFormCols } = useMobileOptimized();
   const user = authService.getCurrentUser();
   const [selectedGroupId, setSelectedGroupId] = useState<string>("");
   const [activeTab, setActiveTab] = useState("info");
@@ -877,7 +878,7 @@ const CuratorGroup = () => {
                           >
                             {getStudentStats(selectedStudent.id).riskLevel ===
                             "low"
-                              ? "Норма"
+                              ? "��орма"
                               : getStudentStats(selectedStudent.id)
                                     .riskLevel === "medium"
                                 ? "Внимание"
@@ -1244,7 +1245,7 @@ const CuratorGroup = () => {
                             subject: "Математика",
                             date: "20.01.2024",
                             comment:
-                              "Очень активный студент, хорошо работает на уроках",
+                              "Очень а��тивный студент, хорошо работает на уроках",
                             type: "positive",
                           },
                           {
