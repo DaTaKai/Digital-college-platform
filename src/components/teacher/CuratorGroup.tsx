@@ -1235,7 +1235,7 @@ const CuratorGroup = () => {
                               }
                             >
                               {work.status === "submitted"
-                                ? "Сдан��"
+                                ? "Сдано"
                                 : work.status === "late"
                                   ? "Просрочено"
                                   : "Не сдано"}
@@ -1473,7 +1473,5 @@ const CuratorGroup = () => {
     </div>
   );
 };
-
-export default CuratorGroup;
 
 export default CuratorGroup;
