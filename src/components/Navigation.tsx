@@ -23,6 +23,8 @@ import {
   X,
   ShoppingCart,
   Coins,
+  TrendingUp,
+  Shield,
 } from "lucide-react";
 
 interface NavigationProps {
