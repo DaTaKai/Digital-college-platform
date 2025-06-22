@@ -493,7 +493,7 @@ const CuratorGroup = () => {
                 (s) => getStudentStats(s.id).riskLevel === "high",
               ).length === 0 && (
                 <p className="text-center text-gray-500 py-4">
-                  Нет студентов в зоне риска
+                  Нет студентов в зо��е риска
                 </p>
               )}
             </div>
@@ -725,35 +725,67 @@ const CuratorGroup = () => {
       </Tabs>
 
       {/* Enhanced Student Profile Dialog */}
-      <Dialog open={studentDialog} onOpenChange={setStudentDialog}>
-        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-          {selectedStudent && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-3">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage
-                      src={selectedStudent.avatar}
-                      alt={selectedStudent.name}
-                    />
-                    <AvatarFallback className="text-lg">
-                      {selectedStudent.name
-                        .split(" ")
-                        .map((n: string) => n[0])
-                        .join("")}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="text-xl font-bold">
-                      {selectedStudent.name}
-                    </div>
-                    <div className="text-sm text-gray-500">
-                      {currentGroup.name} • {currentGroup.course} курс •{" "}
-                      {currentGroup.specialty}
-                    </div>
-                  </div>
-                </DialogTitle>
-              </DialogHeader>
+      {selectedStudent && (
+        <MobileDialog
+          open={studentDialog}
+          onOpenChange={setStudentDialog}
+          title={
+            <div className="flex items-center gap-3">
+              <Avatar className="h-8 w-8 md:h-12 md:w-12">
+                <AvatarImage
+                  src={selectedStudent.avatar}
+                  alt={selectedStudent.name}
+                />
+                <AvatarFallback className="text-sm md:text-lg">
+                  {selectedStudent.name
+                    .split(" ")
+                    .map((n: string) => n[0])
+                    .join("")}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <div className="text-lg md:text-xl font-bold">{selectedStudent.name}</div>
+                <div className="text-xs md:text-sm text-gray-500">
+                  {currentGroup.name} • {currentGroup.course} курс
+                </div>
+              </div>
+            </div>
+          }
+          footer={
+            <div className="flex flex-col sm:flex-row gap-2 w-full">
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
+                  <Download className="h-4 w-4 mr-2" />
+                  PDF отчёт
+                </Button>
+                <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
+                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  Отметить
+                </Button>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setStudentDialog(false)}
+                  className="flex-1 sm:flex-none"
+                >
+                  Закрыть
+                </Button>
+                <Button
+                  onClick={() => {
+                    setMessageRecipient("student");
+                    setStudentDialog(false);
+                    setMessageDialog(true);
+                  }}
+                  className="flex-1 sm:flex-none"
+                >
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Написать
+                </Button>
+              </div>
+            </div>
+          }
+        >
 
               <Tabs defaultValue="info" className="w-full">
                 <TabsList className="grid w-full grid-cols-5">
@@ -776,26 +808,18 @@ const CuratorGroup = () => {
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <Label className="text-sm text-gray-600">ФИО</Label>
-                            <p className="font-semibold">
-                              {selectedStudent.name}
-                            </p>
+                            <p className="font-semibold">{selectedStudent.name}</p>
                           </div>
                           <div>
-                            <Label className="text-sm text-gray-600">
-                              Группа
-                            </Label>
+                            <Label className="text-sm text-gray-600">Группа</Label>
                             <p className="font-semibold">{currentGroup.name}</p>
                           </div>
                           <div>
-                            <Label className="text-sm text-gray-600">
-                              Email
-                            </Label>
+                            <Label className="text-sm text-gray-600">Email</Label>
                             <p className="text-sm">{selectedStudent.email}</p>
                           </div>
                           <div>
-                            <Label className="text-sm text-gray-600">
-                              Телефон
-                            </Label>
+                            <Label className="text-sm text-gray-600">Телефон</Label>
                             <p className="text-sm">+7 777 123 45 67</p>
                           </div>
                           <div>
@@ -803,24 +827,18 @@ const CuratorGroup = () => {
                             <p className="text-sm">123456789012</p>
                           </div>
                           <div>
-                            <Label className="text-sm text-gray-600">
-                              Дата рождения
-                            </Label>
+                            <Label className="text-sm text-gray-600">Дата рождения</Label>
                             <p className="text-sm">01.01.2003</p>
                           </div>
                         </div>
 
                         <div className="border-t pt-4">
                           <Label className="text-sm text-gray-600">Адрес</Label>
-                          <p className="text-sm">
-                            г. Алматы, ул. Абая 150, кв. 25
-                          </p>
+                          <p className="text-sm">г. Алматы, ул. Абая 150, кв. 25</p>
                         </div>
 
                         <div className="border-t pt-4">
-                          <Label className="text-sm text-gray-600">
-                            Последняя активность
-                          </Label>
+                          <Label className="text-sm text-gray-600">Последняя активность</Label>
                           <p className="text-sm text-gray-600">
                             {getStudentStats(selectedStudent.id).lastActivity}
                           </p>
@@ -835,21 +853,16 @@ const CuratorGroup = () => {
                           <div className="text-3xl font-bold text-blue-600">
                             {getStudentStats(selectedStudent.id).averageGrade}
                           </div>
-                          <div className="text-sm text-blue-700">
-                            Средний балл
-                          </div>
+                          <div className="text-sm text-blue-700">Средний балл</div>
                         </CardContent>
                       </Card>
 
                       <Card>
                         <CardContent className="p-6 text-center">
                           <div className="text-3xl font-bold text-green-600">
-                            {getStudentStats(selectedStudent.id).attendanceRate}
-                            %
+                            {getStudentStats(selectedStudent.id).attendanceRate}%
                           </div>
-                          <div className="text-sm text-green-700">
-                            Посещаемость
-                          </div>
+                          <div className="text-sm text-green-700">Посещаемость</div>
                         </CardContent>
                       </Card>
 
@@ -866,27 +879,21 @@ const CuratorGroup = () => {
                         <CardContent className="p-6 text-center">
                           <Badge
                             variant={
-                              getStudentStats(selectedStudent.id).riskLevel ===
-                              "low"
+                              getStudentStats(selectedStudent.id).riskLevel === "low"
                                 ? "default"
-                                : getStudentStats(selectedStudent.id)
-                                      .riskLevel === "medium"
+                                : getStudentStats(selectedStudent.id).riskLevel === "medium"
                                   ? "secondary"
                                   : "destructive"
                             }
                             className="text-lg p-2"
                           >
-                            {getStudentStats(selectedStudent.id).riskLevel ===
-                            "low"
-                              ? "��орма"
-                              : getStudentStats(selectedStudent.id)
-                                    .riskLevel === "medium"
+                            {getStudentStats(selectedStudent.id).riskLevel === "low"
+                              ? "Норма"
+                              : getStudentStats(selectedStudent.id).riskLevel === "medium"
                                 ? "Внимание"
                                 : "Риск"}
                           </Badge>
-                          <div className="text-sm text-gray-700 mt-2">
-                            Статус
-                          </div>
+                          <div className="text-sm text-gray-700 mt-2">Статус</div>
                         </CardContent>
                       </Card>
                     </div>
@@ -1112,9 +1119,7 @@ const CuratorGroup = () => {
                                   absence.justified ? "default" : "destructive"
                                 }
                               >
-                                {absence.justified
-                                  ? "Уважительная"
-                                  : "Неуважительная"}
+                                {absence.justified ? "Уважительная" : "Неуважительная"}
                               </Badge>
                             </div>
                           ))}
@@ -1244,24 +1249,21 @@ const CuratorGroup = () => {
                             author: "Гүлмира Асқарқызы",
                             subject: "Математика",
                             date: "20.01.2024",
-                            comment:
-                              "Очень а��тивный студент, хорошо работает на уроках",
+                            comment: "Очень активный студент, хорошо работает на уроках",
                             type: "positive",
                           },
                           {
                             author: "Мұрат Серікұлы",
                             subject: "История",
                             date: "15.01.2024",
-                            comment:
-                              "Нужна поддержка по предмету, часто пропускает занятия",
+                            comment: "Нужна поддержка по предмету, часто пропускает занятия",
                             type: "concern",
                           },
                           {
                             author: "Лейла Қайратқызы",
                             subject: "Физика",
                             date: "10.01.2024",
-                            comment:
-                              "Показывает хорошие результаты в лабораторных работах",
+                            comment: "Показывает хорошие результаты в лабораторных работах",
                             type: "positive",
                           },
                         ].map((comment, index) => (
@@ -1280,16 +1282,11 @@ const CuratorGroup = () => {
                                 <div className="flex items-center gap-2 mb-2">
                                   <Avatar className="h-6 w-6">
                                     <AvatarFallback className="text-xs">
-                                      {comment.author
-                                        .split(" ")
-                                        .map((n) => n[0])
-                                        .join("")}
+                                      {comment.author.split(" ").map(n => n[0]).join("")}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div>
-                                    <p className="font-medium text-sm">
-                                      {comment.author}
-                                    </p>
+                                    <p className="font-medium text-sm">{comment.author}</p>
                                     <p className="text-xs text-gray-500">
                                       {comment.subject} • {comment.date}
                                     </p>
@@ -1313,9 +1310,7 @@ const CuratorGroup = () => {
                       </div>
 
                       <div className="border-t pt-4 mt-6">
-                        <h4 className="font-medium mb-3">
-                          Добавить комментарий
-                        </h4>
+                        <h4 className="font-medium mb-3">Добавить комментарий</h4>
                         <div className="space-y-3">
                           <Textarea
                             placeholder="Оставьте комментарий о студенте..."
