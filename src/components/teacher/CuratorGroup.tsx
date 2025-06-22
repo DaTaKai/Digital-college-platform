@@ -10,14 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { MobileDialog } from "@/components/ui/mobile-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -583,7 +576,7 @@ const CuratorGroup = () => {
         <h3 className="text-lg font-semibold">Документы и отчёты</h3>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Создать отчёт
+          Соз��ать отчёт
         </Button>
       </div>
 
