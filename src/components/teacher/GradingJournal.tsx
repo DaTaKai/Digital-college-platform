@@ -346,7 +346,7 @@ const GradingJournal = () => {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="5">5 (отлично)</SelectItem>
-                        <SelectItem value="4">4 (хорошо)</SelectItem>
+                        <SelectItem value="4">4 (х��рошо)</SelectItem>
                         <SelectItem value="3">3 (удовлетворительно)</SelectItem>
                         <SelectItem value="2">
                           2 (неудовлетворительно)
@@ -412,7 +412,7 @@ const GradingJournal = () => {
                             title: e.target.value,
                           }))
                         }
-                        placeholder="Например: Решить зада��и 1-10"
+                        placeholder="Например: Решить задачи 1-10"
                       />
                     </div>
                     <div className="space-y-2">
