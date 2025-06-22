@@ -3,6 +3,8 @@ import Navigation from "@/components/Navigation";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import UserManagement from "@/components/admin/UserManagement";
 import AcademicStructure from "@/components/admin/AcademicStructure";
+import ScheduleManagement from "@/components/admin/ScheduleManagement";
+import AnalyticsReports from "@/components/admin/AnalyticsReports";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -33,41 +35,9 @@ const AdminDashboardPage = () => {
       case "structure":
         return <AcademicStructure />;
       case "schedule":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Управление расписанием
-            </h2>
-            <div className="text-center py-12">
-              <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Визуальный редактор расписания
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Drag & drop редактор с фильтрацией и историей изменений
-              </p>
-              <Badge variant="secondary">В разработке</Badge>
-            </div>
-          </div>
-        );
+        return <ScheduleManagement />;
       case "analytics":
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-gray-900">
-              Аналитика и отчеты
-            </h2>
-            <div className="text-center py-12">
-              <TrendingUp className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Детальная аналитика
-              </h3>
-              <p className="text-gray-500 mb-4">
-                Отчеты по посещаемости, успеваемости и экспорт в PDF/Excel
-              </p>
-              <Badge variant="secondary">В разработке</Badge>
-            </div>
-          </div>
-        );
+        return <AnalyticsReports />;
       case "quality":
         return (
           <div className="space-y-6">
