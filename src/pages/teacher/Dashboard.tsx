@@ -43,6 +43,8 @@ const TeacherDashboard = () => {
 
   const renderJournalTab = () => <GradingJournal />;
 
+  const renderCuratorTab = () => <CuratorGroup />;
+
   const renderAnalyticsTab = () => (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold text-gray-900">Активность студентов</h2>
