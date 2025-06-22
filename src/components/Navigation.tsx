@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { authService } from "@/lib/auth";
+import { getStudentPoints } from "@/lib/data";
 import {
   GraduationCap,
   Calendar,
