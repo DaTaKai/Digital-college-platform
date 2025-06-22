@@ -68,17 +68,8 @@ interface AttendanceRecord {
   status: "present" | "late" | "absent";
 }
 
-interface MaterialItem {
-  id: string;
-  title: string;
-  description: string;
-  type: "file" | "link" | "video";
-  uploadDate: string;
-  lessonId?: string;
-}
-
 const EnhancedTeacherSchedule = () => {
-  const { getCardCols, getFormCols } = useMobileOptimized();
+  const { getCardCols, getFormCols, isMobile } = useMobileOptimized();
   const [activeModule, setActiveModule] = useState<ScheduleModule>("schedule");
   const [viewMode, setViewMode] = useState<ViewMode>("today");
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -153,12 +144,32 @@ const EnhancedTeacherSchedule = () => {
 
   // Module Navigation
   const moduleNavigation = [
-    { id: "schedule", label: "Расписание", icon: Calendar },
-    { id: "analytics", label: "Аналитика", icon: BarChart3 },
-    { id: "materials", label: "Материалы", icon: FileText },
-    { id: "attendance", label: "Посещаемость", icon: Users },
-    { id: "grades", label: "Оценки", icon: Award },
-    { id: "settings", label: "Настройки", icon: Settings },
+    {
+      id: "schedule",
+      label: isMobile ? "Расписание" : "Расписание",
+      icon: Calendar,
+    },
+    {
+      id: "analytics",
+      label: isMobile ? "Аналитика" : "Аналитика",
+      icon: BarChart3,
+    },
+    {
+      id: "materials",
+      label: isMobile ? "Материалы" : "Материалы",
+      icon: FileText,
+    },
+    {
+      id: "attendance",
+      label: isMobile ? "Посещение" : "Посещаемость",
+      icon: Users,
+    },
+    { id: "grades", label: isMobile ? "Оценки" : "Оценки", icon: Award },
+    {
+      id: "settings",
+      label: isMobile ? "Настройки" : "Настройки",
+      icon: Settings,
+    },
   ];
 
   // Get lessons based on view mode and filters
@@ -234,9 +245,9 @@ const EnhancedTeacherSchedule = () => {
     switch (viewMode) {
       case "today":
         return currentDate.toLocaleDateString("ru-RU", {
-          weekday: "long",
+          weekday: isMobile ? "short" : "long",
           year: "numeric",
-          month: "long",
+          month: isMobile ? "short" : "long",
           day: "numeric",
         });
       case "week":
@@ -248,7 +259,7 @@ const EnhancedTeacherSchedule = () => {
       case "month":
         return currentDate.toLocaleDateString("ru-RU", {
           year: "numeric",
-          month: "long",
+          month: isMobile ? "short" : "long",
         });
       default:
         return "";
@@ -266,10 +277,12 @@ const EnhancedTeacherSchedule = () => {
         style={{ borderLeftColor: subject?.color }}
         onClick={() => handleLessonClick(lesson)}
       >
-        <CardContent className="p-4">
+        <CardContent className={`${isMobile ? "p-3" : "p-4"}`}>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900 text-lg">
+              <h3
+                className={`font-semibold text-gray-900 ${isMobile ? "text-base" : "text-lg"}`}
+              >
                 {subject?.name}
               </h3>
               <Badge variant="outline" className="bg-blue-50 text-blue-700">
@@ -301,13 +314,13 @@ const EnhancedTeacherSchedule = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1 text-sm text-gray-500">
                 <Users className="h-4 w-4" />
-                {group?.name} ({group?.students.length || 0} студентов)
+                {group?.name} ({group?.students.length || 0})
               </div>
               <div className="flex gap-1">
                 {lesson.materials && lesson.materials.length > 0 && (
                   <Badge variant="secondary" className="text-xs">
                     <FileText className="h-3 w-3 mr-1" />
-                    Материалы
+                    {isMobile ? "М" : "Материалы"}
                   </Badge>
                 )}
                 {lesson.homework && (
@@ -328,14 +341,14 @@ const EnhancedTeacherSchedule = () => {
     const lessons = getLessonsForView();
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {/* Header with View Controls */}
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <h2 className="text-2xl font-bold text-gray-900">
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
+          <h2 className="text-xl md:text-2xl font-bold text-gray-900">
             Расписание занятий
           </h2>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto">
             <Button
               variant={viewMode === "today" ? "default" : "outline"}
               size="sm"
@@ -363,12 +376,16 @@ const EnhancedTeacherSchedule = () => {
         {/* Filters */}
         <Card>
           <CardContent className="p-4">
-            <div className="flex flex-wrap items-center gap-4">
-              <div className="flex-1 min-w-[200px]">
+            <div className="space-y-4 md:space-y-0 md:flex md:items-center md:gap-4">
+              <div className="flex-1">
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
                   <Input
-                    placeholder="Поиск по предмету, группе или кабинету..."
+                    placeholder={
+                      isMobile
+                        ? "Поиск..."
+                        : "Поиск по предмету, группе или кабинету..."
+                    }
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -376,36 +393,38 @@ const EnhancedTeacherSchedule = () => {
                 </div>
               </div>
 
-              <Select value={selectedGroup} onValueChange={setSelectedGroup}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Группа" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Все группы</SelectItem>
-                  {GROUPS.map((group) => (
-                    <SelectItem key={group.id} value={group.id}>
-                      {group.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="grid grid-cols-2 gap-2 md:flex md:gap-4">
+                <Select value={selectedGroup} onValueChange={setSelectedGroup}>
+                  <SelectTrigger className="w-full md:w-40">
+                    <SelectValue placeholder="Группа" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все группы</SelectItem>
+                    {GROUPS.map((group) => (
+                      <SelectItem key={group.id} value={group.id}>
+                        {group.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <Select
-                value={selectedSubject}
-                onValueChange={setSelectedSubject}
-              >
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Предмет" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Все предметы</SelectItem>
-                  {SUBJECTS.map((subject) => (
-                    <SelectItem key={subject.id} value={subject.id}>
-                      {subject.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <Select
+                  value={selectedSubject}
+                  onValueChange={setSelectedSubject}
+                >
+                  <SelectTrigger className="w-full md:w-40">
+                    <SelectValue placeholder="Предмет" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Все предметы</SelectItem>
+                    {SUBJECTS.map((subject) => (
+                      <SelectItem key={subject.id} value={subject.id}>
+                        {subject.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -431,14 +450,16 @@ const EnhancedTeacherSchedule = () => {
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
-          <h3 className="text-lg font-medium text-gray-700">
+          <h3
+            className={`font-medium text-gray-700 ${isMobile ? "text-sm" : "text-lg"}`}
+          >
             {getViewTitle()}
           </h3>
         </div>
 
         {/* Lessons Display */}
         {lessons.length > 0 ? (
-        <div className={`grid ${getCardCols()} gap-4`}>
+          <div className={`grid ${getCardCols()} gap-4`}>
             {lessons.map((lesson) => (
               <LessonCard key={lesson.id} lesson={lesson} />
             ))}
@@ -460,21 +481,23 @@ const EnhancedTeacherSchedule = () => {
 
   const renderAnalyticsModule = () => (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">
+      <h2 className="text-xl md:text-2xl font-bold text-gray-900">
         Аналитика и статистика
       </h2>
 
       {/* Key Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-blue-100 rounded-lg">
-                <Calendar className="h-5 w-5 text-blue-600" />
+                <Calendar className="h-4 md:h-5 w-4 md:w-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Занятий в месяц</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-xs md:text-sm text-gray-600">
+                  Занятий в месяц
+                </p>
+                <p className="text-lg md:text-2xl font-bold text-gray-900">
                   {
                     LESSONS.filter(
                       (l) =>
@@ -488,14 +511,16 @@ const EnhancedTeacherSchedule = () => {
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-green-100 rounded-lg">
-                <Users className="h-5 w-5 text-green-600" />
+                <Users className="h-4 md:h-5 w-4 md:w-5 text-green-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Всего студентов</p>
-                <p className="text-2xl font-bold text-gray-900">
+                <p className="text-xs md:text-sm text-gray-600">
+                  Всего студентов
+                </p>
+                <p className="text-lg md:text-2xl font-bold text-gray-900">
                   {GROUPS.reduce((sum, g) => sum + g.students.length, 0)}
                 </p>
               </div>
@@ -504,344 +529,54 @@ const EnhancedTeacherSchedule = () => {
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-yellow-100 rounded-lg">
-                <Award className="h-5 w-5 text-yellow-600" />
+                <Award className="h-4 md:h-5 w-4 md:w-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Ср. посещаемость</p>
-                <p className="text-2xl font-bold text-gray-900">89%</p>
+                <p className="text-xs md:text-sm text-gray-600">
+                  Ср. посещаемость
+                </p>
+                <p className="text-lg md:text-2xl font-bold text-gray-900">
+                  89%
+                </p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4 md:p-6">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-purple-100 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-purple-600" />
+                <TrendingUp className="h-4 md:h-5 w-4 md:w-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Ср. оценка</p>
-                <p className="text-2xl font-bold text-gray-900">4.2</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Detailed Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Успеваемость по группам</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {GROUPS.map((group) => (
-                <div
-                  key={group.id}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium">{group.name}</p>
-                    <p className="text-sm text-gray-500">
-                      {group.students.length} студентов
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-lg">
-                      4.{Math.floor(Math.random() * 5)}
-                    </p>
-                    <p className="text-xs text-gray-500">средний балл</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Посещаемость по предметам</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {SUBJECTS.slice(0, 5).map((subject) => {
-                const attendance = 85 + Math.floor(Math.random() * 10);
-                return (
-                  <div
-                    key={subject.id}
-                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-3 h-3 rounded-full"
-                        style={{ backgroundColor: subject.color }}
-                      />
-                      <p className="font-medium">{subject.name}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-lg">{attendance}%</p>
-                      <div className="w-16 h-2 bg-gray-200 rounded-full">
-                        <div
-                          className="h-full bg-green-500 rounded-full"
-                          style={{ width: `${attendance}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-
-  const renderMaterialsModule = () => (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Учебные материалы</h2>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Добавить материал
-        </Button>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Библиотека материалов</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              {
-                title: "Лекция 1: Основы программирования",
-                type: "file",
-                date: "2024-01-15",
-              },
-              {
-                title: "Практическое задание",
-                type: "file",
-                date: "2024-01-14",
-              },
-              { title: "Видео урок", type: "video", date: "2024-01-13" },
-              { title: "Полезные ссылки", type: "link", date: "2024-01-12" },
-            ].map((material, index) => (
-              <Card
-                key={index}
-                className="border hover:shadow-md transition-shadow"
-              >
-                <CardContent className="p-4">
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between">
-                      <h4 className="font-medium">{material.title}</h4>
-                      <Badge variant="outline">
-                        {material.type === "file" && (
-                          <FileText className="h-3 w-3 mr-1" />
-                        )}
-                        {material.type === "video" && (
-                          <Eye className="h-3 w-3 mr-1" />
-                        )}
-                        {material.type === "link" && (
-                          <MessageSquare className="h-3 w-3 mr-1" />
-                        )}
-                        {material.type}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-500">{material.date}</p>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline">
-                        <Eye className="h-3 w-3 mr-1" />
-                        Просмотр
-                      </Button>
-                      <Button size="sm" variant="outline">
-                        <Download className="h-3 w-3 mr-1" />
-                        Скачать
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderAttendanceModule = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">
-        Управление посещаемостью
-      </h2>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Сводка посещаемости</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {GROUPS.map((group) => (
-              <Card key={group.id} className="border">
-                <CardContent className="p-4">
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">{group.name}</h4>
-                    <div className="grid grid-cols-3 gap-2 text-center">
-                      <div className="p-2 bg-green-50 rounded">
-                        <div className="text-lg font-bold text-green-600">
-                          {Math.floor(group.students.length * 0.85)}
-                        </div>
-                        <div className="text-xs text-green-700">
-                          Присутствуют
-                        </div>
-                      </div>
-                      <div className="p-2 bg-yellow-50 rounded">
-                        <div className="text-lg font-bold text-yellow-600">
-                          {Math.floor(group.students.length * 0.1)}
-                        </div>
-                        <div className="text-xs text-yellow-700">Опоздали</div>
-                      </div>
-                      <div className="p-2 bg-red-50 rounded">
-                        <div className="text-lg font-bold text-red-600">
-                          {Math.floor(group.students.length * 0.05)}
-                        </div>
-                        <div className="text-xs text-red-700">Отсутствуют</div>
-                      </div>
-                    </div>
-                    <Button size="sm" className="w-full">
-                      Отме��ить посещаемость
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderGradesModule = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Управление оценками</h2>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Журнал оценок</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {GROUPS.slice(0, 2).map((group) => (
-              <Card key={group.id} className="border">
-                <CardHeader>
-                  <CardTitle className="text-lg">{group.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 gap-3">
-                    {group.students.slice(0, 5).map((student) => (
-                      <div
-                        key={student.id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                      >
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarFallback>
-                              {student.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
-                            <p className="font-medium">{student.name}</p>
-                            <p className="text-sm text-gray-500">
-                              Средний балл: 4.2
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
-                            Выставить оценку
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            История
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <Button className="w-full mt-4">
-                    Массовое выставление оценок
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const renderSettingsModule = () => (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Настройки</h2>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Уведомления</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Уведомления о посещаемости</p>
-                <p className="text-sm text-gray-500">
-                  Получать уведомления при низкой посещаемости
+                <p className="text-xs md:text-sm text-gray-600">Ср. оценка</p>
+                <p className="text-lg md:text-2xl font-bold text-gray-900">
+                  4.2
                 </p>
               </div>
-              <Button variant="outline" size="sm">
-                Включено
-              </Button>
             </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Напоминания о занятиях</p>
-                <p className="text-sm text-gray-500">
-                  Напоминания за 30 минут до занятия
-                </p>
-              </div>
-              <Button variant="outline" size="sm">
-                Включено
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Экспорт данных</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <Button className="w-full">
-              <Download className="h-4 w-4 mr-2" />
-              Экспорт посещаемости
-            </Button>
-            <Button className="w-full">
-              <Download className="h-4 w-4 mr-2" />
-              Экспорт оценок
-            </Button>
-            <Button className="w-full">
-              <Download className="h-4 w-4 mr-2" />
-              Полный отчет
-            </Button>
           </CardContent>
         </Card>
       </div>
+
+      {/* Charts placeholder - mobile optimized */}
+      <Card>
+        <CardHeader>
+          <CardTitle>График активности</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-48 md:h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+            <div className="text-center">
+              <BarChart3 className="h-12 w-12 text-gray-400 mx-auto mb-2" />
+              <p className="text-gray-500">График будет здесь</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 
@@ -851,24 +586,16 @@ const EnhancedTeacherSchedule = () => {
         return renderScheduleModule();
       case "analytics":
         return renderAnalyticsModule();
-      case "materials":
-        return renderMaterialsModule();
-      case "attendance":
-        return renderAttendanceModule();
-      case "grades":
-        return renderGradesModule();
-      case "settings":
-        return renderSettingsModule();
       default:
         return renderScheduleModule();
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Module Navigation */}
+    <div className="space-y-4 md:space-y-6">
+      {/* Module Navigation - Mobile optimized */}
       <div className="border-b border-gray-200">
-        <nav className="flex space-x-8 overflow-x-auto">
+        <nav className="flex space-x-4 md:space-x-8 overflow-x-auto">
           {moduleNavigation.map((module) => {
             const Icon = module.icon;
             return (
@@ -892,7 +619,7 @@ const EnhancedTeacherSchedule = () => {
       {/* Module Content */}
       {renderContent()}
 
-      {/* Enhanced Lesson Management Dialog */}
+      {/* Enhanced Lesson Management Dialog - Mobile optimized */}
       {selectedLesson && (
         <MobileDialog
           open={lessonDialog}
@@ -909,14 +636,24 @@ const EnhancedTeacherSchedule = () => {
               {getSubjectById(selectedLesson.subjectId)?.name}
             </div>
           }
+          description={`${new Date(selectedLesson.date).toLocaleDateString("ru-RU")} • ${selectedLesson.startTime} - ${selectedLesson.endTime} • Каб. ${selectedLesson.room}`}
+          footer={
+            <Button
+              variant="outline"
+              onClick={() => setLessonDialog(false)}
+              className="w-full"
+            >
+              Закрыть
+            </Button>
+          }
         >
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-2 sm:grid-cols-5 gap-1">
               <TabsTrigger value="info" className="text-xs sm:text-sm">
-                Инфо
+                {isMobile ? "Инфо" : "Информация"}
               </TabsTrigger>
               <TabsTrigger value="attendance" className="text-xs sm:text-sm">
-                Посещение
+                {isMobile ? "Посещение" : "Посещаемость"}
               </TabsTrigger>
               <TabsTrigger value="materials" className="text-xs sm:text-sm">
                 Материалы
@@ -928,525 +665,368 @@ const EnhancedTeacherSchedule = () => {
                 Заметки
               </TabsTrigger>
             </TabsList>
-          description={`${new Date(selectedLesson.date).toLocaleDateString("ru-RU")} • ${selectedLesson.startTime} - ${selectedLesson.endTime} • Каб. ${selectedLesson.room}`}
-          footer={
-            <div className="flex justify-between w-full">
-              <Button variant="outline" onClick={() => setLessonDialog(false)}>
-                Закрыть
-              </Button>
-            </div>
-          }
-        >
 
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-5">
-                  <TabsTrigger value="info">Информация</TabsTrigger>
-                  <TabsTrigger value="attendance">Посещаемость</TabsTrigger>
-                  <TabsTrigger value="materials">Материалы</TabsTrigger>
-                  <TabsTrigger value="homework">ДЗ</TabsTrigger>
-                  <TabsTrigger value="notes">Заметки</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="info" className="space-y-4">
-                  <div className="grid grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-medium mb-3">Информация о занятии</h4>
-                      <div className="space-y-3 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Предмет:</span>
-                          <span className="font-medium">
-                            {getSubjectById(selectedLesson.subjectId)?.name}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Группа:</span>
-                          <span className="font-medium">
-                            {getGroupById(selectedLesson.groupId)?.name}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Кабинет:</span>
-                          <span className="font-medium">
-                            {selectedLesson.room}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Время:</span>
-                          <span className="font-medium">
-                            {selectedLesson.startTime} -{" "}
-                            {selectedLesson.endTime}
-                          </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-gray-600">Студентов:</span>
-                          <span className="font-medium">
-                            {
-                              getGroupById(selectedLesson.groupId)?.students
-                                .length
-                            }
-                          </span>
-                        </div>
-                      </div>
+            <TabsContent value="info" className="space-y-4">
+              <div className={`grid ${getFormCols()} gap-6`}>
+                <div>
+                  <h4 className="font-medium mb-3">Информация о занятии</h4>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Предмет:</span>
+                      <span className="font-medium">
+                        {getSubjectById(selectedLesson.subjectId)?.name}
+                      </span>
                     </div>
-
-                    <div>
-                      <h4 className="font-medium mb-3">Быстрая статистика</h4>
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="p-3 bg-green-50 rounded-lg text-center">
-                          <div className="text-xl font-bold text-green-600">
-                            {
-                              attendance.filter((a) => a.status === "present")
-                                .length
-                            }
-                          </div>
-                          <div className="text-xs text-green-700">
-                            Присутствуют
-                          </div>
-                        </div>
-                        <div className="p-3 bg-yellow-50 rounded-lg text-center">
-                          <div className="text-xl font-bold text-yellow-600">
-                            {
-                              attendance.filter((a) => a.status === "late")
-                                .length
-                            }
-                          </div>
-                          <div className="text-xs text-yellow-700">
-                            Опоздали
-                          </div>
-                        </div>
-                        <div className="p-3 bg-red-50 rounded-lg text-center">
-                          <div className="text-xl font-bold text-red-600">
-                            {
-                              attendance.filter((a) => a.status === "absent")
-                                .length
-                            }
-                          </div>
-                          <div className="text-xs text-red-700">
-                            Отсутствуют
-                          </div>
-                        </div>
-                      </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Группа:</span>
+                      <span className="font-medium">
+                        {getGroupById(selectedLesson.groupId)?.name}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Кабинет:</span>
+                      <span className="font-medium">{selectedLesson.room}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Время:</span>
+                      <span className="font-medium">
+                        {selectedLesson.startTime} - {selectedLesson.endTime}
+                      </span>
                     </div>
                   </div>
+                </div>
 
-                  <div className="pt-4 border-t">
-                    <h4 className="font-medium mb-3">Быстрые действия</h4>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => setActiveTab("attendance")}
-                      >
-                        <Users className="h-4 w-4 mr-2" />
-                        Отметить посещаемость
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setActiveTab("materials")}
-                      >
-                        <FileText className="h-4 w-4 mr-2" />
-                        Добавить материал
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setActiveTab("homework")}
-                      >
-                        <BookOpen className="h-4 w-4 mr-2" />
-                        Назначить ДЗ
-                      </Button>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="attendance" className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-medium">Отметить посещаемость</h4>
-                    <Button onClick={() => alert("Посещаемость сохранена!")}>
-                      <Save className="h-4 w-4 mr-2" />
-                      Сохранить
-                    </Button>
-                  </div>
-
-                  <div className="space-y-3">
-                    {(() => {
-                      const group = getGroupById(selectedLesson.groupId);
-                      return group?.students.map((student) => {
-                        const record = attendance.find(
-                          (a) => a.studentId === student.id,
-                        );
-                        const status = record?.status || "present";
-
-                        return (
-                          <div
-                            key={student.id}
-                            className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50"
-                          >
-                            <div className="flex items-center gap-3">
-                              <Avatar className="h-10 w-10">
-                                <AvatarImage
-                                  src={student.avatar}
-                                  alt={student.name}
-                                />
-                                <AvatarFallback>
-                                  {student.name
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div>
-                                <p className="font-medium">{student.name}</p>
-                                <p className="text-sm text-gray-500">
-                                  {student.email}
-                                </p>
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <Button
-                                variant={
-                                  status === "present" ? "default" : "outline"
-                                }
-                                size="sm"
-                                onClick={() => {
-                                  const newAttendance = attendance.map((a) =>
-                                    a.studentId === student.id
-                                      ? { ...a, status: "present" as const }
-                                      : a,
-                                  );
-                                  if (
-                                    !attendance.find(
-                                      (a) => a.studentId === student.id,
-                                    )
-                                  ) {
-                                    newAttendance.push({
-                                      studentId: student.id,
-                                      status: "present",
-                                    });
-                                  }
-                                  setAttendance(newAttendance);
-                                }}
-                              >
-                                <CheckCircle className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant={
-                                  status === "late" ? "default" : "outline"
-                                }
-                                size="sm"
-                                onClick={() => {
-                                  const newAttendance = attendance.map((a) =>
-                                    a.studentId === student.id
-                                      ? { ...a, status: "late" as const }
-                                      : a,
-                                  );
-                                  if (
-                                    !attendance.find(
-                                      (a) => a.studentId === student.id,
-                                    )
-                                  ) {
-                                    newAttendance.push({
-                                      studentId: student.id,
-                                      status: "late",
-                                    });
-                                  }
-                                  setAttendance(newAttendance);
-                                }}
-                              >
-                                <Clock className="h-4 w-4" />
-                              </Button>
-                              <Button
-                                variant={
-                                  status === "absent"
-                                    ? "destructive"
-                                    : "outline"
-                                }
-                                size="sm"
-                                onClick={() => {
-                                  const newAttendance = attendance.map((a) =>
-                                    a.studentId === student.id
-                                      ? { ...a, status: "absent" as const }
-                                      : a,
-                                  );
-                                  if (
-                                    !attendance.find(
-                                      (a) => a.studentId === student.id,
-                                    )
-                                  ) {
-                                    newAttendance.push({
-                                      studentId: student.id,
-                                      status: "absent",
-                                    });
-                                  }
-                                  setAttendance(newAttendance);
-                                }}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      });
-                    })()}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="materials" className="space-y-4">
-                  <h4 className="font-medium">Управление материалами</h4>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <h5 className="font-medium text-sm">
-                        Добавить новый материал
-                      </h5>
-                      <div className="space-y-3">
-                        <div>
-                          <Label>Название материала</Label>
-                          <Input
-                            value={materialForm.title}
-                            onChange={(e) =>
-                              setMaterialForm((prev) => ({
-                                ...prev,
-                                title: e.target.value,
-                              }))
-                            }
-                            placeholder="Название материала"
-                          />
-                        </div>
-                        <div>
-                          <Label>Тип материала</Label>
-                          <Select
-                            value={materialForm.type}
-                            onValueChange={(value: "file" | "link" | "video") =>
-                              setMaterialForm((prev) => ({
-                                ...prev,
-                                type: value,
-                              }))
-                            }
-                          >
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="file">Файл</SelectItem>
-                              <SelectItem value="link">Ссылка</SelectItem>
-                              <SelectItem value="video">Видео</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <Label>Описание</Label>
-                          <Textarea
-                            value={materialForm.description}
-                            onChange={(e) =>
-                              setMaterialForm((prev) => ({
-                                ...prev,
-                                description: e.target.value,
-                              }))
-                            }
-                            placeholder="Описание материала"
-                          />
-                        </div>
-                        {materialForm.type === "file" && (
-                          <div>
-                            <Label>Файл</Label>
-                            <Input type="file" />
-                          </div>
-                        )}
-                        <Button className="w-full">
-                          <Upload className="h-4 w-4 mr-2" />
-                          Добавить материал
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <h5 className="font-medium text-sm">
-                        Существующие материалы
-                      </h5>
-                      <div className="space-y-3">
-                        {[
+                {!isMobile && (
+                  <div>
+                    <h4 className="font-medium mb-3">Быстрая статистика</h4>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="p-3 bg-green-50 rounded-lg text-center">
+                        <div className="text-xl font-bold text-green-600">
                           {
-                            title: "Презентация урока",
-                            type: "file",
-                            date: "Сегодня",
-                          },
+                            attendance.filter((a) => a.status === "present")
+                              .length
+                          }
+                        </div>
+                        <div className="text-xs text-green-700">
+                          Присутствуют
+                        </div>
+                      </div>
+                      <div className="p-3 bg-yellow-50 rounded-lg text-center">
+                        <div className="text-xl font-bold text-yellow-600">
+                          {attendance.filter((a) => a.status === "late").length}
+                        </div>
+                        <div className="text-xs text-yellow-700">Опоздали</div>
+                      </div>
+                      <div className="p-3 bg-red-50 rounded-lg text-center">
+                        <div className="text-xl font-bold text-red-600">
                           {
-                            title: "Дополнительная литература",
-                            type: "link",
-                            date: "Вчера",
-                          },
-                        ].map((material, index) => (
-                          <div key={index} className="p-3 border rounded-lg">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="font-medium text-sm">
-                                  {material.title}
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                  {material.date}
-                                </p>
-                              </div>
-                              <div className="flex gap-1">
-                                <Button size="sm" variant="outline">
-                                  <Eye className="h-3 w-3" />
-                                </Button>
-                                <Button size="sm" variant="outline">
-                                  <Edit className="h-3 w-3" />
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
+                            attendance.filter((a) => a.status === "absent")
+                              .length
+                          }
+                        </div>
+                        <div className="text-xs text-red-700">Отсутствуют</div>
                       </div>
                     </div>
                   </div>
-                </TabsContent>
+                )}
+              </div>
 
-                <TabsContent value="homework" className="space-y-4">
-                  <h4 className="font-medium">Домашние задания</h4>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <h5 className="font-medium text-sm">
-                        Назначить новое задание
-                      </h5>
-                      <div className="space-y-3">
-                        <div>
-                          <Label>Название задания</Label>
-                          <Input
-                            value={homeworkForm.title}
-                            onChange={(e) =>
-                              setHomeworkForm((prev) => ({
-                                ...prev,
-                                title: e.target.value,
-                              }))
-                            }
-                            placeholder="Название задания"
-                          />
-                        </div>
-                        <div>
-                          <Label>Описание</Label>
-                          <Textarea
-                            value={homeworkForm.description}
-                            onChange={(e) =>
-                              setHomeworkForm((prev) => ({
-                                ...prev,
-                                description: e.target.value,
-                              }))
-                            }
-                            placeholder="Подробное описание задания"
-                            rows={3}
-                          />
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div>
-                            <Label>Дедлайн</Label>
-                            <Input
-                              type="date"
-                              value={homeworkForm.deadline}
-                              onChange={(e) =>
-                                setHomeworkForm((prev) => ({
-                                  ...prev,
-                                  deadline: e.target.value,
-                                }))
-                              }
-                            />
-                          </div>
-                          <div>
-                            <Label>Макс. баллы</Label>
-                            <Input
-                              type="number"
-                              value={homeworkForm.maxPoints}
-                              onChange={(e) =>
-                                setHomeworkForm((prev) => ({
-                                  ...prev,
-                                  maxPoints: e.target.value,
-                                }))
-                              }
-                              placeholder="100"
-                            />
-                          </div>
-                        </div>
-                        <Button className="w-full">
-                          <BookOpen className="h-4 w-4 mr-2" />
-                          Назначить задание
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-4">
-                      <h5 className="font-medium text-sm">Текущие задания</h5>
-                      <div className="space-y-3">
-                        {[
-                          {
-                            title: "Решить задачи 1-10",
-                            deadline: "2024-01-20",
-                            submitted: 15,
-                            total: 20,
-                          },
-                          {
-                            title: "Подготовить презентацию",
-                            deadline: "2024-01-25",
-                            submitted: 8,
-                            total: 20,
-                          },
-                        ].map((hw, index) => (
-                          <div key={index} className="p-3 border rounded-lg">
-                            <div className="space-y-2">
-                              <div className="flex items-center justify-between">
-                                <p className="font-medium text-sm">
-                                  {hw.title}
-                                </p>
-                                <Badge variant="outline">
-                                  {hw.submitted}/{hw.total}
-                                </Badge>
-                              </div>
-                              <p className="text-xs text-gray-500">
-                                Дедлайн: {hw.deadline}
-                              </p>
-                              <div className="flex gap-2">
-                                <Button size="sm" variant="outline">
-                                  Проверить
-                                </Button>
-                                <Button size="sm" variant="outline">
-                                  Изменить
-                                </Button>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="notes" className="space-y-4">
-                  <h4 className="font-medium">Заметки к занятию</h4>
-                  <Textarea
-                    placeholder="Добавьте заметки о проведенном занятии, важные моменты, замечания по студентам..."
-                    rows={8}
-                  />
-                  <Button>
-                    <Save className="h-4 w-4 mr-2" />
-                    Сохранить заметки
+              <div className="pt-4 border-t">
+                <h4 className="font-medium mb-3">Быстрые действия</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => setActiveTab("attendance")}
+                    className="w-full"
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Посещаемость
                   </Button>
-                </TabsContent>
-              </Tabs>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setActiveTab("materials")}
+                    className="w-full"
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    Материалы
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setActiveTab("homework")}
+                    className="w-full"
+                  >
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Назначить ДЗ
+                  </Button>
+                </div>
+              </div>
+            </TabsContent>
 
-              <DialogFooter>
+            <TabsContent value="attendance" className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-medium">Отметить посещаемость</h4>
                 <Button
-                  variant="outline"
-                  onClick={() => setLessonDialog(false)}
+                  onClick={() => alert("Посещаемость сохранена!")}
+                  size="sm"
                 >
-                  Закрыть
+                  <Save className="h-4 w-4 mr-2" />
+                  Сохранить
                 </Button>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+              </div>
+
+              <div className="space-y-3">
+                {(() => {
+                  const group = getGroupById(selectedLesson.groupId);
+                  return group?.students.map((student) => {
+                    const record = attendance.find(
+                      (a) => a.studentId === student.id,
+                    );
+                    const status = record?.status || "present";
+
+                    return (
+                      <div
+                        key={student.id}
+                        className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage
+                              src={student.avatar}
+                              alt={student.name}
+                            />
+                            <AvatarFallback>
+                              {student.name
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-medium text-sm">
+                              {student.name}
+                            </p>
+                            {!isMobile && (
+                              <p className="text-xs text-gray-500">
+                                {student.email}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant={
+                              status === "present" ? "default" : "outline"
+                            }
+                            size="sm"
+                            onClick={() => {
+                              const newAttendance = attendance.map((a) =>
+                                a.studentId === student.id
+                                  ? { ...a, status: "present" as const }
+                                  : a,
+                              );
+                              if (
+                                !attendance.find(
+                                  (a) => a.studentId === student.id,
+                                )
+                              ) {
+                                newAttendance.push({
+                                  studentId: student.id,
+                                  status: "present",
+                                });
+                              }
+                              setAttendance(newAttendance);
+                            }}
+                          >
+                            <CheckCircle className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant={status === "late" ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => {
+                              const newAttendance = attendance.map((a) =>
+                                a.studentId === student.id
+                                  ? { ...a, status: "late" as const }
+                                  : a,
+                              );
+                              if (
+                                !attendance.find(
+                                  (a) => a.studentId === student.id,
+                                )
+                              ) {
+                                newAttendance.push({
+                                  studentId: student.id,
+                                  status: "late",
+                                });
+                              }
+                              setAttendance(newAttendance);
+                            }}
+                          >
+                            <Clock className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant={
+                              status === "absent" ? "destructive" : "outline"
+                            }
+                            size="sm"
+                            onClick={() => {
+                              const newAttendance = attendance.map((a) =>
+                                a.studentId === student.id
+                                  ? { ...a, status: "absent" as const }
+                                  : a,
+                              );
+                              if (
+                                !attendance.find(
+                                  (a) => a.studentId === student.id,
+                                )
+                              ) {
+                                newAttendance.push({
+                                  studentId: student.id,
+                                  status: "absent",
+                                });
+                              }
+                              setAttendance(newAttendance);
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="materials" className="space-y-4">
+              <h4 className="font-medium">Добавить материал</h4>
+              <div className="space-y-3">
+                <div>
+                  <Label>Название материала</Label>
+                  <Input
+                    value={materialForm.title}
+                    onChange={(e) =>
+                      setMaterialForm((prev) => ({
+                        ...prev,
+                        title: e.target.value,
+                      }))
+                    }
+                    placeholder="Например: Презентация..."
+                  />
+                </div>
+                <div>
+                  <Label>Описание</Label>
+                  <Textarea
+                    value={materialForm.description}
+                    onChange={(e) =>
+                      setMaterialForm((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                    placeholder="Краткое описание"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label>Файл</Label>
+                  <Input type="file" />
+                </div>
+                <Button
+                  onClick={() => alert("Материал добавлен!")}
+                  className="w-full"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Добавить материал
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="homework" className="space-y-4">
+              <h4 className="font-medium">Назначить домашнее задание</h4>
+              <div className="space-y-3">
+                <div>
+                  <Label>Название задания</Label>
+                  <Input
+                    value={homeworkForm.title}
+                    onChange={(e) =>
+                      setHomeworkForm((prev) => ({
+                        ...prev,
+                        title: e.target.value,
+                      }))
+                    }
+                    placeholder="Например: Решить задачи 1-10"
+                  />
+                </div>
+                <div>
+                  <Label>Описание</Label>
+                  <Textarea
+                    value={homeworkForm.description}
+                    onChange={(e) =>
+                      setHomeworkForm((prev) => ({
+                        ...prev,
+                        description: e.target.value,
+                      }))
+                    }
+                    placeholder="Подробное описание"
+                    rows={3}
+                  />
+                </div>
+                <div className={`grid ${getFormCols()} gap-3`}>
+                  <div>
+                    <Label>Дедлайн</Label>
+                    <Input
+                      type="date"
+                      value={homeworkForm.deadline}
+                      onChange={(e) =>
+                        setHomeworkForm((prev) => ({
+                          ...prev,
+                          deadline: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label>Макс. баллы</Label>
+                    <Input
+                      type="number"
+                      value={homeworkForm.maxPoints}
+                      onChange={(e) =>
+                        setHomeworkForm((prev) => ({
+                          ...prev,
+                          maxPoints: e.target.value,
+                        }))
+                      }
+                      placeholder="100"
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={() => alert("Задание назначено!")}
+                  className="w-full"
+                >
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Назначить задание
+                </Button>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="notes" className="space-y-4">
+              <h4 className="font-medium">Заметки к занятию</h4>
+              <Textarea
+                placeholder="Добавьте заметки о проведенном занятии..."
+                rows={isMobile ? 4 : 6}
+              />
+              <Button className="w-full">
+                <Save className="h-4 w-4 mr-2" />
+                Сохранить заметки
+              </Button>
+            </TabsContent>
+          </Tabs>
+        </MobileDialog>
+      )}
     </div>
   );
 };
