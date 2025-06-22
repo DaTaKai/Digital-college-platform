@@ -266,8 +266,8 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
 
           {/* Mobile Menu */}
           {mobileMenuOpen && (
-            <div className="border-t border-gray-200 pb-3 pt-3">
-              <div className="grid grid-cols-2 gap-2">
+            <div className="border-t border-gray-200 pb-4 pt-4 bg-gray-50">
+              <div className="grid grid-cols-2 gap-3">
                 {navItems.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -279,10 +279,12 @@ const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
                         onTabChange?.(item.id);
                         setMobileMenuOpen(false);
                       }}
-                      className="gap-2 h-12 flex-col"
+                      className="gap-2 h-14 flex-col p-3 bg-white shadow-sm border"
                     >
-                      <Icon className="h-4 w-4" />
-                      <span className="text-xs">{item.label}</span>
+                      <Icon className="h-5 w-5" />
+                      <span className="text-xs font-medium leading-tight">
+                        {item.label}
+                      </span>
                     </Button>
                   );
                 })}
