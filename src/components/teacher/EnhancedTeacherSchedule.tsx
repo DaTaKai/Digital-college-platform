@@ -78,6 +78,7 @@ interface MaterialItem {
 }
 
 const EnhancedTeacherSchedule = () => {
+  const { getCardCols, getFormCols } = useMobileOptimized();
   const [activeModule, setActiveModule] = useState<ScheduleModule>("schedule");
   const [viewMode, setViewMode] = useState<ViewMode>("today");
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -509,7 +510,7 @@ const EnhancedTeacherSchedule = () => {
                 <Award className="h-5 w-5 text-yellow-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600">Ср. посещаемост��</p>
+                <p className="text-sm text-gray-600">Ср. посещаемость</p>
                 <p className="text-2xl font-bold text-gray-900">89%</p>
               </div>
             </div>
@@ -731,7 +732,7 @@ const EnhancedTeacherSchedule = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>Журнал оценок</CardTitle>
+          <CardTitle>Журнал ��ценок</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
