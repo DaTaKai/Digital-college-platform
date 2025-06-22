@@ -257,6 +257,9 @@ const TeacherDashboard = () => {
                   { id: "schedule", label: "Расписание", icon: Calendar },
                   { id: "journal", label: "Журнал", icon: BookOpen },
                   { id: "analytics", label: "Аналитика", icon: BarChart3 },
+                  ...(isCurator(user.id)
+                    ? [{ id: "curator", label: "Моя группа", icon: Users }]
+                    : []),
                 ].map((item) => {
                   const Icon = item.icon;
                   return (
